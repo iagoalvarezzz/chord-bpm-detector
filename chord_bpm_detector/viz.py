@@ -1,5 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import librosa
+import librosa.display
+
+N_FFT = 2048
+HOP = 512
 
 def plot_waveform(y, sr, ax=None):
   if ax is None:
@@ -30,4 +35,16 @@ def plot_spectrum(y, sr, ax=None):
   print("Top 5 frecuencies: ", x[top5])
   print("Top 5 magnitudes: ", y_magnitude[top5])
   
+  return ax
+
+def plot_spectrogram(y,sr,ax=None):
+  if ax is None:
+    _,ax = plt.subplots(figsize=(10,4))
+  
+  y_stft = librosa.stft(y, n_fft=N_FFT, hop_length=HOP)
+  y_magnitude = np.abs(y_stft)
+  y_magnitude_dB = librosa.amplitude_to_db(y_magnitude, ref=np.max)
+  librosa.display.specshow(y_magnitude_dB, sr=sr, hop_length=HOP, 
+    x_axis="time", y_axis="log", ax=ax)
+  ax.set(title="spectrogram")
   return ax
