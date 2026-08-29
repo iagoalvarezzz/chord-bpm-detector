@@ -48,3 +48,11 @@ def plot_spectrogram(y,sr,ax=None):
     x_axis="time", y_axis="log", ax=ax)
   ax.set(title="spectrogram")
   return ax
+
+def plot_chroma(chroma, sr, ax=None):
+  if ax is None:
+    _,ax = plt.subplots(figsize=(10,4))
+  librosa.display.specshow(chroma,sr=sr,hop_length=HOP,
+    x_axis="time",y_axis="chroma",ax=ax)
+  ax.set(title="chromagram")
+  return ax
