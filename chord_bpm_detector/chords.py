@@ -29,3 +29,14 @@ def classify_chords(chroma, templates):
   sim = T @ C
   idx = sim.argmax(axis=0)
   return [names[i] for i in idx]
+
+def segment_chords(labels, sr, hop=HOP):
+  times = librosa.frames_to_time(np.arange(len(labels)),sr=sr,hop_length=HOP)
+  segments = []
+  start = 0
+  for i in range(1, len(labels)):
+    if labels[i] != labels[i-1]:
+      segments.append((float(times[start]), float(times[i]), labels[start]))
+      start = i
+  segments.append((float(times[start]), float(times[-1]), labels[start]))
+  return segments
