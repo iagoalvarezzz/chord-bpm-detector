@@ -56,3 +56,17 @@ def plot_chroma(chroma, sr, ax=None):
     x_axis="time",y_axis="chroma",ax=ax)
   ax.set(title="chromagram")
   return ax
+
+def plot_analysis(y,sr,result,save_path=None):
+  fig, ax = plt.subplots(figsize=(12,5))
+  plot_spectrogram(y,sr,ax=ax)
+  for c in result["chords"]:
+    start = c["start"]
+    end = c["end"]
+    chord = c["chord"]
+    ax.axvline(start,alpha=0.8,color="white",linestyle="--")
+    ax.text((start+end)/2,(sr/2)+1000,chord,rotation=0,va="center",ha="center",fontsize=7)
+  ax.set_title(f"spectrogram with chords. bpm: {result['bpm']}",pad=15)
+  if save_path is not None:
+    fig.savefig(save_path, dpi=120, bbox_inches="tight")
+  return fig,ax
