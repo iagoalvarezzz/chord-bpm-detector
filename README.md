@@ -23,6 +23,18 @@ For tempo, an onset strength envelope is computed (a signal that measures how mu
 
 For chords, a chromagram is computed via CQT. This is a matrix that folds all frequency content into the 12 notes (C, C#, D, D#,...), adding each note's energy across all octaves. Via cosine similarity each instant of the chromagram is compared against a 24 chord template (one major and one minor chord per note) and assigned the best match. Then, consecutive frames sharing the same chord are grouped into segments with their start and end time. 
 
+## Automation
+
+An n8n workflow automates the full pipeline: drop an audio file, get it
+analyzed and archived automatically.
+
+1. **Webhook** — receives an uploaded audio file.
+2. **HTTP Request** — sends it to the `/analyze` endpoint of this project's API.
+3. **Convert to File** — turns the JSON response into a file.
+4. **Write File to Disk** — saves the result with a unique timestamped name.
+
+The exported workflow is available at [`automation/workflow.json`](automation/workflow.json).
+
 ## Known limitations
 
 - Tempo estimates are not completely precise due to internal smoothing of the onset envelope and timing jitter. 

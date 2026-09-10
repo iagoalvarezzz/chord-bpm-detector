@@ -1,0 +1,124 @@
+{
+  "name": "chord-bpm-detector",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "analyze-audio",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "efb88fdb-9d61-4857-a2ba-5b87e7e59a29",
+      "name": "Webhook",
+      "webhookId": "16608a98-e870-4f95-88f1-3007f8c96dbe"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/analyze",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "df12261e-2753-499a-86e6-a18bc5c6be03",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/data/results/analysis_{{ $now.toMillis() }}.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "952e48e7-7998-497f-a8e2-d9cf60d5e429",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "046c1b5d-9c52-48f4-b012-d4cfbbbd2e2d",
+      "name": "Convert to File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f718dbf2-04e6-4a60-a2d7-c0be7065505a",
+  "meta": {
+    "instanceId": "8709afce6ac247346bc0a5737ef3961aedc9d89d57d858bb1948aa38a23f90a9"
+  },
+  "nodeGroups": [],
+  "id": "FNBva4R6NssARhIQ",
+  "tags": []
+}
